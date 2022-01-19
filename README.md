@@ -1,8 +1,11 @@
 # gocancel-go
 
-[![test](https://github.com/gocancel/gocancel-go/actions/workflows/test.yml/badge.svg)](https://github.com/gocancel/gocancel-go/actions/workflows/test.yml)
+[![Build Status](https://img.shields.io/github/workflow/status/gocancel/gocancel-go/test?style=flat-square)](https://github.com/gocancel/gocancel-go/actions/workflows/test.yml)
+[![GoDoc](https://godoc.org/github.com/gocancel/gocancel-go?status.svg)](https://godoc.org/github.com/gocancel/gocancel-go)
 
 gocancel-go is a Go client library for accessing the GoCancel API.
+
+You can view the client API docs here: [http://godoc.org/github.com/gocancel/gocancel-go](http://godoc.org/github.com/gocancel/gocancel-go).
 
 You can view the GoCancel API docs here: [https://app.gocxl.com/docs](https://app.gocxl.com/docs).
 
