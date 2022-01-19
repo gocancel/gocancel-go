@@ -129,29 +129,56 @@ func testNewRequestAndDoFailure(t *testing.T, methodName string, client *Client,
 	}
 }
 
-func TestClient(t *testing.T) {
-	c := NewClient(nil)
-	c2 := c.Client()
-	if c.client == c2 {
-		t.Error("Client returned same http.Client, but should be different")
+func testClientServices(t *testing.T, c *Client) {
+	services := []string{
+		"Categories",
+		"Letters",
+		"Organizations",
+		"Products",
+		"Providers",
+		"Webhooks",
 	}
+
+	cp := reflect.ValueOf(c)
+	cv := reflect.Indirect(cp)
+
+	for _, s := range services {
+		if cv.FieldByName(s).IsNil() {
+			t.Errorf("c.%s shouldn't be nil", s)
+		}
+	}
+}
+
+func testClientDefaultBaseURL(t *testing.T, c *Client) {
+	if got, want := c.BaseURL.String(), defaultBaseURL; got != want {
+		t.Errorf("NewClient BaseURL is %v, want %v", got, want)
+	}
+}
+
+func testClientDefaultUserAgent(t *testing.T, c *Client) {
+	if got, want := c.UserAgent, userAgent; got != want {
+		t.Errorf("NewClient UserAgent is %v, want %v", got, want)
+	}
+}
+
+func testClientDefaults(t *testing.T, c *Client) {
+	testClientDefaultBaseURL(t, c)
+	testClientDefaultUserAgent(t, c)
+	testClientServices(t, c)
 }
 
 func TestNewClient(t *testing.T) {
 	c := NewClient(nil)
+	testClientDefaults(t, c)
+}
 
-	if got, want := c.BaseURL.String(), defaultBaseURL; got != want {
-		t.Errorf("NewClient BaseURL is %v, want %v", got, want)
-	}
+func TestNew(t *testing.T) {
+	c, err := New(nil)
 
-	if got, want := c.UserAgent, userAgent; got != want {
-		t.Errorf("NewClient UserAgent is %v, want %v", got, want)
+	if err != nil {
+		t.Fatalf("New(): %v", err)
 	}
-
-	c2 := NewClient(nil)
-	if c.client == c2.client {
-		t.Error("NewClient returned same http.Clients, but they should differ")
-	}
+	testClientDefaults(t, c)
 }
 
 func TestNewRequest(t *testing.T) {
@@ -159,7 +186,7 @@ func TestNewRequest(t *testing.T) {
 
 	inURL, outURL := "/foo", defaultBaseURL+"foo"
 	inBody, outBody := &Category{ID: String("foo")}, `{"id":"foo"}`+"\n"
-	req, _ := c.NewRequest("GET", inURL, inBody)
+	req, _ := c.NewRequest("POST", inURL, inBody)
 
 	// test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
@@ -178,13 +205,35 @@ func TestNewRequest(t *testing.T) {
 	}
 }
 
+func TestNewRequest_get(t *testing.T) {
+	c := NewClient(nil)
+
+	inURL, outURL := "/foo", defaultBaseURL+"foo"
+	req, _ := c.NewRequest("GET", inURL, nil)
+
+	// test that relative URL was expanded
+	if req.URL.String() != outURL {
+		t.Errorf("NewRequest(%v) URL = %v, expected %v", inURL, req.URL, outURL)
+	}
+
+	// test the content-type header is not set
+	if contentType := req.Header.Get("Content-Type"); contentType != "" {
+		t.Errorf("NewRequest() Content-Type is %v, want empty string", contentType)
+	}
+
+	// test that default user-agent is attached to the request
+	if got, want := req.Header.Get("User-Agent"), c.UserAgent; got != want {
+		t.Errorf("NewRequest() User-Agent is %v, want %v", got, want)
+	}
+}
+
 func TestNewRequest_invalidJSON(t *testing.T) {
 	c := NewClient(nil)
 
 	type T struct {
 		A map[interface{}]interface{}
 	}
-	_, err := c.NewRequest("GET", ".", &T{})
+	_, err := c.NewRequest("POST", ".", &T{})
 
 	if err == nil {
 		t.Error("Expected error to be returned.")
@@ -207,32 +256,48 @@ func TestNewRequest_badMethod(t *testing.T) {
 	}
 }
 
-func TestNewRequest_emptyUserAgent(t *testing.T) {
-	c := NewClient(nil)
-	c.UserAgent = ""
+func TestNewRequest_withCustomUserAgent(t *testing.T) {
+	ua := "testing/0.0.1"
+
+	c, err := New(nil, SetUserAgent(ua))
+	if err != nil {
+		t.Fatalf("NewRequest returned unexpected error: %v", err)
+	}
+
 	req, err := c.NewRequest("GET", ".", nil)
 	if err != nil {
 		t.Fatalf("NewRequest returned unexpected error: %v", err)
 	}
-	if _, ok := req.Header["User-Agent"]; ok {
-		t.Fatal("constructed request contains unexpected User-Agent header")
+
+	want := fmt.Sprintf("%s %s", ua, userAgent)
+	if got := req.Header.Get("User-Agent"); got != want {
+		t.Errorf("NewRequest UserAgent is %s, want %s", got, want)
 	}
 }
 
-// If a nil body is passed to greneonline.NewRequest, make sure that nil is also
-// passed to http.NewRequest. In most cases, passing an io.Reader that returns
-// no content is fine, since there is no difference between an HTTP request
-// body that is an empty string versus one that is not set at all. However in
-// certain cases, intermediate systems may treat these differently resulting in
-// subtle errors.
-func TestNewRequest_emptyBody(t *testing.T) {
-	c := NewClient(nil)
+func TestNewRequest_withCustomHeaders(t *testing.T) {
+	expectedIdentity := "identity"
+	expectedCustom := "x_test_header"
+
+	c, err := New(nil, SetRequestHeaders(map[string]string{
+		"Accept-Encoding": expectedIdentity,
+		"X-Test-Header":   expectedCustom,
+	}))
+	if err != nil {
+		t.Fatalf("NewRequest returned unexpected error: %v", err)
+	}
+
 	req, err := c.NewRequest("GET", ".", nil)
 	if err != nil {
 		t.Fatalf("NewRequest returned unexpected error: %v", err)
 	}
-	if req.Body != nil {
-		t.Fatalf("constructed request contains a non-nil Body")
+
+	if got := req.Header.Get("Accept-Encoding"); got != expectedIdentity {
+		t.Errorf("NewRequest Custom Accept Encoding Header is %s, want %s", got, expectedIdentity)
+	}
+
+	if got := req.Header.Get("X-Test-Header"); got != expectedCustom {
+		t.Errorf("NewRequest Custom Accept Encoding Header is %s, want %s", got, expectedCustom)
 	}
 }
 

@@ -20,6 +20,7 @@ import (
 const (
 	defaultBaseURL = "https://app.gocxl.com/"
 	userAgent      = "gocancel-go"
+	mediaType      = "application/json"
 
 	defaultMediaType         = "application/json"
 	mediaTypeLetterDocument  = "application/octet-stream"
@@ -54,6 +55,9 @@ type Client struct {
 	Products      *ProductsService
 	Providers     *ProvidersService
 	Webhooks      *WebhooksService
+
+	// Optional extra HTTP headers to set on every request to the API.
+	headers map[string]string
 }
 
 type service struct {
@@ -82,19 +86,17 @@ func addOptions(s string, opts interface{}) (string, error) {
 	return u.String(), nil
 }
 
-// Client returns the http.Client used by this GoCancel client.
-func (c *Client) Client() *http.Client {
-	clientCopy := *c.client
-	return &clientCopy
-}
-
 // NewClient returns a new GoCancel API client. If a nil httpClient is
-// provided, a new http.Client will be used. To use API methods which require
+// provided, the http.DefaultClient will be used. To use API methods which require
 // authentication, provide an http.Client that will perform the authentication
 // for you (such as that provided by the golang.org/x/oauth2 library).
+//
+// Users who wish to pass their own http.Client should use this method. If
+// you're in need of further customization, the gocancel.New method allows more
+// options, such as setting a custom URL or a custom user agent string.
 func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
-		httpClient = &http.Client{}
+		httpClient = http.DefaultClient
 	}
 
 	baseURL, _ := url.Parse(defaultBaseURL)
@@ -107,7 +109,57 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Products = (*ProductsService)(&c.common)
 	c.Providers = (*ProvidersService)(&c.common)
 	c.Webhooks = (*WebhooksService)(&c.common)
+
+	c.headers = make(map[string]string)
+
 	return c
+}
+
+// ClientOpt are options for New.
+type ClientOpt func(*Client) error
+
+// New returns a new GoCancel API client instance.
+func New(httpClient *http.Client, opts ...ClientOpt) (*Client, error) {
+	c := NewClient(httpClient)
+	for _, opt := range opts {
+		if err := opt(c); err != nil {
+			return nil, err
+		}
+	}
+
+	return c, nil
+}
+
+// SetBaseURL is a client option for setting the base URL.
+func SetBaseURL(bu string) ClientOpt {
+	return func(c *Client) error {
+		u, err := url.Parse(bu)
+		if err != nil {
+			return err
+		}
+
+		c.BaseURL = u
+		return nil
+	}
+}
+
+// SetUserAgent is a client option for setting the user agent.
+func SetUserAgent(ua string) ClientOpt {
+	return func(c *Client) error {
+		c.UserAgent = fmt.Sprintf("%s %s", ua, c.UserAgent)
+		return nil
+	}
+}
+
+// SetRequestHeaders sets optional HTTP headers on the client that are
+// sent on each HTTP request.
+func SetRequestHeaders(headers map[string]string) ClientOpt {
+	return func(c *Client) error {
+		for k, v := range headers {
+			c.headers[k] = v
+		}
+		return nil
+	}
 }
 
 // NewRequest creates an API request. A relative URL can be provided in urlStr,
@@ -125,31 +177,37 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 
-	var buf io.ReadWriter
-	if body != nil {
-		buf = &bytes.Buffer{}
-		enc := json.NewEncoder(buf)
-		enc.SetEscapeHTML(false)
-		err := enc.Encode(body)
+	var req *http.Request
+	switch method {
+	case http.MethodGet, http.MethodHead, http.MethodOptions:
+		req, err = http.NewRequest(method, u.String(), nil)
 		if err != nil {
 			return nil, err
 		}
+
+	default:
+		buf := new(bytes.Buffer)
+		if body != nil {
+			err = json.NewEncoder(buf).Encode(body)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		req, err = http.NewRequest(method, u.String(), buf)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Content-Type", mediaType)
 	}
 
-	req, err := http.NewRequest(method, u.String(), buf)
-	if err != nil {
-		return nil, err
+	for k, v := range c.headers {
+		req.Header.Add(k, v)
 	}
 
 	req.Header.Set("Accept", defaultMediaType)
-
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	if c.UserAgent != "" {
-		req.Header.Set("User-Agent", c.UserAgent)
-	}
+	req.Header.Set("User-Agent", c.UserAgent)
 
 	return req, nil
 }
