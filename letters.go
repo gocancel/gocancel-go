@@ -44,6 +44,21 @@ func (l Letter) String() string {
 // LetterParameters represents key-value parameters for a letter.
 type LetterParameters map[string]interface{}
 
+// LetterRequest represents a base request for creating or updating a letter.
+type LetterRequest struct {
+	OrganizationID string           `json:"organization_id,omitempty"`
+	ProductID      string           `json:"product_id,omitempty"`
+	ProviderID     string           `json:"provider_id,omitempty"`
+	Locale         string           `json:"locale,omitempty"`
+	Parameters     LetterParameters `json:"parameters,omitempty"`
+	ProofOfIDs     []string         `json:"proof_of_ids,omitempty"`
+	SignatureType  string           `json:"signature_type,omitempty"`
+	SignatureData  string           `json:"signature_data,omitempty"`
+	Consent        bool             `json:"consent,omitempty"`
+	Metadata       Metadata         `json:"metadata,omitempty"`
+	Drafted        bool             `json:"drafted,omitempty"`
+}
+
 type LettersSortOptions struct {
 	CreatedAt string `url:"created_at,omitempty"`
 	UpdatedAt string `url:"updated_at,omitempty"`
@@ -82,22 +97,8 @@ func (s *LettersService) List(ctx context.Context, opts *LettersListOptions) ([]
 	return root.Letters, resp, nil
 }
 
-// CreateLetterRequest represents a `create letter` request.
-type CreateLetterRequest struct {
-	OrganizationID string           `json:"organization_id,omitempty"`
-	ProductID      string           `json:"product_id,omitempty"`
-	ProviderID     string           `json:"provider_id,omitempty"`
-	Locale         string           `json:"locale,omitempty"`
-	Parameters     LetterParameters `json:"parameters,omitempty"`
-	ProofOfIDs     []string         `json:"proof_of_ids,omitempty"`
-	SignatureType  string           `json:"signature_type,omitempty"`
-	SignatureData  string           `json:"signature_data,omitempty"`
-	Metadata       Metadata         `json:"metadata,omitempty"`
-	Drafted        bool             `json:"drafted,omitempty"`
-}
-
 // Create creates a letter.
-func (s *LettersService) Create(ctx context.Context, request *CreateLetterRequest) (*Letter, *Response, error) {
+func (s *LettersService) Create(ctx context.Context, request *LetterRequest) (*Letter, *Response, error) {
 	req, err := s.client.NewRequest("POST", "api/v1/letters", request)
 	if err != nil {
 		return nil, nil, err
@@ -128,6 +129,42 @@ func (s *LettersService) Get(ctx context.Context, letter string) (*Letter, *Resp
 	}
 
 	return root.Letter, resp, nil
+}
+
+// Update updates a letter.
+func (s *LettersService) Update(ctx context.Context, letter string, request *LetterRequest) (*Letter, *Response, error) {
+	u := fmt.Sprintf("api/v1/letters/%s", letter)
+	req, err := s.client.NewRequest("PUT", u, request)
+	if err != nil {
+		return nil, nil, err
+	}
+	req.Header.Set("Accept", mediaTypeLetterDocument)
+
+	root := new(letterRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.Letter, resp, nil
+}
+
+// Delete deletes a letter.
+func (s *LettersService) Delete(ctx context.Context, letter string) (*Response, error) {
+	u := fmt.Sprintf("api/v1/letters/%s", letter)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", mediaTypeLetterDocument)
+
+	root := new(letterRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 // DownloadDocument fetches a letter document as binary stream.

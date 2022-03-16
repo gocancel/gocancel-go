@@ -164,12 +164,12 @@ func TestLettersService_Create(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	input := &CreateLetterRequest{OrganizationID: "foo"}
+	input := &LetterRequest{OrganizationID: "foo"}
 
 	mux.HandleFunc("/api/v1/letters", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 
-		v := new(CreateLetterRequest)
+		v := new(LetterRequest)
 		_ = json.NewDecoder(r.Body).Decode(v)
 
 		if !cmp.Equal(v, input) {
@@ -230,6 +230,76 @@ func TestLettersService_Get(t *testing.T) {
 		got, resp, err := client.Letters.Get(ctx, "b")
 		if got != nil {
 			t.Errorf("testNewRequestAndDoFailure %v = %#v, want nil", methodName, got)
+		}
+		return resp, err
+	})
+}
+
+func TestLettersService_Update(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	input := &LetterRequest{OrganizationID: "foo"}
+
+	mux.HandleFunc("/api/v1/letters/b", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+
+		v := new(LetterRequest)
+		_ = json.NewDecoder(r.Body).Decode(v)
+
+		if !cmp.Equal(v, input) {
+			t.Errorf("Request body = %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"letter": {"id":"b"}}`)
+	})
+
+	ctx := context.Background()
+	letter, _, err := client.Letters.Update(ctx, "b", input)
+	if err != nil {
+		t.Fatalf("Letters.Update returned error: %v", err)
+	}
+
+	want := &Letter{ID: String("b")}
+	if !cmp.Equal(letter, want) {
+		t.Errorf("Letters.Update returned %+v, want %+v", letter, want)
+	}
+
+	const methodName = "Update"
+	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
+		got, resp, err := client.Letters.Update(ctx, "b", input)
+		if got != nil {
+			t.Errorf("testNewRequestAndDoFailure %v = %#v, want nil", methodName, got)
+		}
+		return resp, err
+	})
+}
+
+func TestLettersService_Delete(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	mux.HandleFunc("/api/v1/letters/b", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		fmt.Fprint(w, "")
+	})
+
+	ctx := context.Background()
+	_, err := client.Letters.Delete(ctx, "b")
+	if err != nil {
+		t.Fatalf("Letters.Delete returned error: %v", err)
+	}
+
+	const methodName = "Delete"
+	testBadOptions(t, methodName, func() (err error) {
+		_, err = client.Letters.Delete(ctx, "\n")
+		return err
+	})
+
+	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
+		resp, err := client.Letters.Delete(ctx, "b")
+		if resp != nil {
+			t.Errorf("testNewRequestAndDoFailure %v = %#v, want nil", methodName, resp)
 		}
 		return resp, err
 	})
