@@ -21,7 +21,7 @@ func TestWebhook_marshal(t *testing.T) {
 		Events:    []*string{String("organization.created")},
 		Locales:   []*string{String("nl-NL")},
 		Active:    Bool(true),
-		Metadata:  &Metadata{"foo": "bar"},
+		Metadata:  &AccountMetadata{"foo": "bar"},
 		CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 		UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 	}
@@ -50,12 +50,12 @@ func TestWebhooksService_List(t *testing.T) {
 	mux.HandleFunc("/api/v1/webhooks", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, url.Values{"active": {"true"}, "sort[created_at]": {"desc"}})
-		fmt.Fprint(w, `{"webhooks": [{"id":"b"}]}`)
+		fmt.Fprint(w, `{"webhooks": [{"id":"b"}], "metadata": {"next_cursor": "def", "previous_cursor": "abc"}}`)
 	})
 
 	ctx := context.Background()
 	opts := &WebhooksListOptions{Active: true, Sort: WebhooksSortOptions{CreatedAt: "desc"}}
-	webhooks, _, err := client.Webhooks.List(ctx, opts)
+	webhooks, resp, err := client.Webhooks.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Webhooks.List returned error: %v", err)
 	}
@@ -63,6 +63,11 @@ func TestWebhooksService_List(t *testing.T) {
 	want := []*Webhook{{ID: String("b")}}
 	if !cmp.Equal(webhooks, want) {
 		t.Errorf("Webhooks.List returned %+v, want %+v", webhooks, want)
+	}
+
+	metadata := &Metadata{NextCursor: "def", PreviousCursor: "abc"}
+	if !cmp.Equal(resp.Metadata, metadata) {
+		t.Errorf("Webhooks.List returned %+v, want %+v", resp.Metadata, metadata)
 	}
 
 	const methodName = "List"

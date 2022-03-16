@@ -21,7 +21,7 @@ type Organization struct {
 	Fax        *string               `json:"fax,omitempty"`
 	Address    *Address              `json:"address,omitempty"`
 	Locales    []*OrganizationLocale `json:"locales,omitempty"`
-	Metadata   *Metadata             `json:"metadata,omitempty"`
+	Metadata   *AccountMetadata      `json:"metadata,omitempty"`
 	CreatedAt  *Timestamp            `json:"created_at,omitempty"`
 	UpdatedAt  *Timestamp            `json:"updated_at,omitempty"`
 }
@@ -43,7 +43,7 @@ type OrganizationLocale struct {
 	Address        *Address                `json:"address,omitempty"`
 	Providers      []*OrganizationProvider `json:"providers,omitempty"`
 	LetterTemplate *LetterTemplate         `json:"letter_template,omitempty"`
-	Metadata       *Metadata               `json:"metadata,omitempty"`
+	Metadata       *AccountMetadata        `json:"metadata,omitempty"`
 	CreatedAt      *Timestamp              `json:"created_at,omitempty"`
 	UpdatedAt      *Timestamp              `json:"updated_at,omitempty"`
 }
@@ -59,7 +59,7 @@ type OrganizationProvider struct {
 	ProviderType          *string                `json:"provider_type,omitempty"`
 	ProviderMethod        *string                `json:"provider_method,omitempty"`
 	ProviderConfiguration *ProviderConfiguration `json:"provider_configuration,omitempty"`
-	Metadata              *Metadata              `json:"metadata,omitempty"`
+	Metadata              *AccountMetadata       `json:"metadata,omitempty"`
 	CreatedAt             *Timestamp             `json:"created_at,omitempty"`
 	UpdatedAt             *Timestamp             `json:"updated_at,omitempty"`
 }
@@ -90,6 +90,7 @@ type organizationRoot struct {
 
 type organizationsRoot struct {
 	Organizations []*Organization `json:"organizations"`
+	Metadata      *Metadata       `json:"metadata"`
 }
 
 // List lists all organizations
@@ -109,6 +110,8 @@ func (s *OrganizationsService) List(ctx context.Context, opts *OrganizationsList
 	if err != nil {
 		return nil, resp, err
 	}
+
+	resp.Metadata = root.Metadata
 
 	return root.Organizations, resp, nil
 }

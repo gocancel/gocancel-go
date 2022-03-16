@@ -51,6 +51,7 @@ type providerRoot struct {
 
 type providersRoot struct {
 	Providers []*Provider `json:"providers"`
+	Metadata  *Metadata   `json:"metadata"`
 }
 
 // List lists all providers
@@ -70,6 +71,8 @@ func (s *ProvidersService) List(ctx context.Context, opts *ProvidersListOptions)
 	if err != nil {
 		return nil, resp, err
 	}
+
+	resp.Metadata = root.Metadata
 
 	return root.Providers, resp, nil
 }

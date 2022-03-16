@@ -36,7 +36,7 @@ func TestLetter_marshal(t *testing.T) {
 		SignatureData:         String("John Doe"),
 		SandboxMode:           Bool(false),
 		SandboxEmail:          String("sandbox@example.com"),
-		Metadata:              &Metadata{"foo": "bar"},
+		Metadata:              &AccountMetadata{"foo": "bar"},
 		CreatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 		UpdatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
@@ -135,12 +135,12 @@ func TestLettersService_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, url.Values{"sort[created_at]": {"asc"}})
 
-		fmt.Fprint(w, `{"letters": [{"id":"b"}]}`)
+		fmt.Fprint(w, `{"letters": [{"id":"b"}], "metadata": {"next_cursor": "def", "previous_cursor": "abc"}}`)
 	})
 
 	ctx := context.Background()
 	opts := &LettersListOptions{Sort: LettersSortOptions{CreatedAt: "asc"}}
-	letters, _, err := client.Letters.List(ctx, opts)
+	letters, resp, err := client.Letters.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Letters.List returned error: %v", err)
 	}
@@ -148,6 +148,11 @@ func TestLettersService_List(t *testing.T) {
 	want := []*Letter{{ID: String("b")}}
 	if !cmp.Equal(letters, want) {
 		t.Errorf("Letters.List returned %+v, want %+v", letters, want)
+	}
+
+	metadata := &Metadata{NextCursor: "def", PreviousCursor: "abc"}
+	if !cmp.Equal(resp.Metadata, metadata) {
+		t.Errorf("Letters.List returned %+v, want %+v", resp.Metadata, metadata)
 	}
 
 	const methodName = "List"

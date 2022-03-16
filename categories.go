@@ -15,7 +15,7 @@ type Category struct {
 	Name      *string           `json:"name,omitempty"`
 	Slug      *string           `json:"slug,omitempty"`
 	Locales   []*CategoryLocale `json:"locales,omitempty"`
-	Metadata  *Metadata         `json:"metadata,omitempty"`
+	Metadata  *AccountMetadata  `json:"metadata,omitempty"`
 	CreatedAt *Timestamp        `json:"created_at,omitempty"`
 	UpdatedAt *Timestamp        `json:"updated_at,omitempty"`
 }
@@ -32,7 +32,7 @@ type CategoryLocale struct {
 	Locale         *string             `json:"locale,omitempty"`
 	Providers      []*CategoryProvider `json:"providers,omitempty"`
 	LetterTemplate *LetterTemplate     `json:"letter_template,omitempty"`
-	Metadata       *Metadata           `json:"metadata,omitempty"`
+	Metadata       *AccountMetadata    `json:"metadata,omitempty"`
 	CreatedAt      *Timestamp          `json:"created_at,omitempty"`
 	UpdatedAt      *Timestamp          `json:"updated_at,omitempty"`
 }
@@ -48,7 +48,7 @@ type CategoryProvider struct {
 	ProviderType          *string                `json:"provider_type,omitempty"`
 	ProviderMethod        *string                `json:"provider_method,omitempty"`
 	ProviderConfiguration *ProviderConfiguration `json:"provider_configuration,omitempty"`
-	Metadata              *Metadata              `json:"metadata,omitempty"`
+	Metadata              *AccountMetadata       `json:"metadata,omitempty"`
 	CreatedAt             *Timestamp             `json:"created_at,omitempty"`
 	UpdatedAt             *Timestamp             `json:"updated_at,omitempty"`
 }
@@ -77,6 +77,7 @@ type categoryRoot struct {
 
 type categoriesRoot struct {
 	Categories []*Category `json:"categories"`
+	Metadata   *Metadata   `json:"metadata"`
 }
 
 // List lists all categories
@@ -96,6 +97,8 @@ func (s *CategoriesService) List(ctx context.Context, opts *CategoriesListOption
 	if err != nil {
 		return nil, resp, err
 	}
+
+	resp.Metadata = root.Metadata
 
 	return root.Categories, resp, nil
 }

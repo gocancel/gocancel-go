@@ -21,7 +21,7 @@ type Product struct {
 	Fax            *string          `json:"fax,omitempty"`
 	Address        *Address         `json:"address,omitempty"`
 	Locales        []*ProductLocale `json:"locales,omitempty"`
-	Metadata       *Metadata        `json:"metadata,omitempty"`
+	Metadata       *AccountMetadata `json:"metadata,omitempty"`
 	CreatedAt      *Timestamp       `json:"created_at,omitempty"`
 	UpdatedAt      *Timestamp       `json:"updated_at,omitempty"`
 }
@@ -43,7 +43,7 @@ type ProductLocale struct {
 	Address        *Address           `json:"address,omitempty"`
 	Providers      []*ProductProvider `json:"providers,omitempty"`
 	LetterTemplate *LetterTemplate    `json:"letter_template,omitempty"`
-	Metadata       *Metadata          `json:"metadata,omitempty"`
+	Metadata       *AccountMetadata   `json:"metadata,omitempty"`
 	CreatedAt      *Timestamp         `json:"created_at,omitempty"`
 	UpdatedAt      *Timestamp         `json:"updated_at,omitempty"`
 }
@@ -59,7 +59,7 @@ type ProductProvider struct {
 	ProviderType          *string                `json:"provider_type,omitempty"`
 	ProviderMethod        *string                `json:"provider_method,omitempty"`
 	ProviderConfiguration *ProviderConfiguration `json:"provider_configuration,omitempty"`
-	Metadata              *Metadata              `json:"metadata,omitempty"`
+	Metadata              *AccountMetadata       `json:"metadata,omitempty"`
 	CreatedAt             *Timestamp             `json:"created_at,omitempty"`
 	UpdatedAt             *Timestamp             `json:"updated_at,omitempty"`
 }
@@ -74,6 +74,7 @@ type productRoot struct {
 
 type productsRoot struct {
 	Products []*Product `json:"products"`
+	Metadata *Metadata  `json:"metadata"`
 }
 
 // Get fetches a product.

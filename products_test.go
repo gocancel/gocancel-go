@@ -22,7 +22,7 @@ func TestProduct_marshal(t *testing.T) {
 		URL:            String("https://acme.com"),
 		Phone:          String("517-234-9141"),
 		Fax:            String("745-756-0818"),
-		Metadata:       &Metadata{"foo": "bar"},
+		Metadata:       &AccountMetadata{"foo": "bar"},
 		CreatedAt:      &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 		UpdatedAt:      &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
@@ -46,7 +46,7 @@ func TestProduct_marshal(t *testing.T) {
 				Phone:     String("517-234-9141"),
 				Fax:       String("745-756-0818"),
 				Locale:    String("nl-NL"),
-				Metadata:  &Metadata{"foo": "bar"},
+				Metadata:  &AccountMetadata{"foo": "bar"},
 				CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 				UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
@@ -67,7 +67,7 @@ func TestProduct_marshal(t *testing.T) {
 						ProviderType:          String("email"),
 						ProviderMethod:        String("single"),
 						ProviderConfiguration: &ProviderConfiguration{"foo": "bar"},
-						Metadata:              &Metadata{"foo": "bar"},
+						Metadata:              &AccountMetadata{"foo": "bar"},
 						CreatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 						UpdatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 					},

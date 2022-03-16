@@ -23,7 +23,7 @@ func TestOrganization_marshal(t *testing.T) {
 		URL:        String("https://acme.com"),
 		Phone:      String("517-234-9141"),
 		Fax:        String("745-756-0818"),
-		Metadata:   &Metadata{"foo": "bar"},
+		Metadata:   &AccountMetadata{"foo": "bar"},
 		CreatedAt:  &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 		UpdatedAt:  &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
@@ -47,7 +47,7 @@ func TestOrganization_marshal(t *testing.T) {
 				Phone:     String("517-234-9141"),
 				Fax:       String("745-756-0818"),
 				Locale:    String("nl-NL"),
-				Metadata:  &Metadata{"foo": "bar"},
+				Metadata:  &AccountMetadata{"foo": "bar"},
 				CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 				UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
@@ -68,7 +68,7 @@ func TestOrganization_marshal(t *testing.T) {
 						ProviderType:          String("email"),
 						ProviderMethod:        String("single"),
 						ProviderConfiguration: &ProviderConfiguration{"foo": "bar"},
-						Metadata:              &Metadata{"foo": "bar"},
+						Metadata:              &AccountMetadata{"foo": "bar"},
 						CreatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 						UpdatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 					},
@@ -192,12 +192,12 @@ func TestOrganizationsService_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}, "locales": {"nl-NL"}})
 
-		fmt.Fprint(w, `{"organizations": [{"id":"b"}]}`)
+		fmt.Fprint(w, `{"organizations": [{"id":"b"}], "metadata": {"next_cursor": "def", "previous_cursor": "abc"}}`)
 	})
 
 	ctx := context.Background()
 	opts := &OrganizationsListOptions{Sort: OrganizationsSortOptions{CreatedAt: "desc"}, Locales: []string{"nl-NL"}}
-	organizations, _, err := client.Organizations.List(ctx, opts)
+	organizations, resp, err := client.Organizations.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Organizations.List returned error: %v", err)
 	}
@@ -205,6 +205,11 @@ func TestOrganizationsService_List(t *testing.T) {
 	want := []*Organization{{ID: String("b")}}
 	if !cmp.Equal(organizations, want) {
 		t.Errorf("Organizations.List returned %+v, want %+v", organizations, want)
+	}
+
+	metadata := &Metadata{NextCursor: "def", PreviousCursor: "abc"}
+	if !cmp.Equal(resp.Metadata, metadata) {
+		t.Errorf("Organizations.List returned %+v, want %+v", resp.Metadata, metadata)
 	}
 
 	const methodName = "List"

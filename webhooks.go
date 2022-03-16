@@ -11,15 +11,15 @@ type WebhooksService service
 
 // Webhook represents a GoCancel webhook.
 type Webhook struct {
-	ID        *string    `json:"id,omitempty"`
-	AccountID *string    `json:"account_id,omitempty"`
-	Url       *string    `json:"url,omitempty"`
-	Events    []*string  `json:"events,omitempty"`
-	Locales   []*string  `json:"locales,omitempty"`
-	Metadata  *Metadata  `json:"metadata,omitempty"`
-	Active    *bool      `json:"active,omitempty"`
-	CreatedAt *Timestamp `json:"created_at,omitempty"`
-	UpdatedAt *Timestamp `json:"updated_at,omitempty"`
+	ID        *string          `json:"id,omitempty"`
+	AccountID *string          `json:"account_id,omitempty"`
+	Url       *string          `json:"url,omitempty"`
+	Events    []*string        `json:"events,omitempty"`
+	Locales   []*string        `json:"locales,omitempty"`
+	Metadata  *AccountMetadata `json:"metadata,omitempty"`
+	Active    *bool            `json:"active,omitempty"`
+	CreatedAt *Timestamp       `json:"created_at,omitempty"`
+	UpdatedAt *Timestamp       `json:"updated_at,omitempty"`
 }
 
 func (w Webhook) String() string {
@@ -54,6 +54,7 @@ type webhookRoot struct {
 
 type webhooksRoot struct {
 	Webhooks []*Webhook `json:"webhooks"`
+	Metadata *Metadata  `json:"metadata"`
 }
 
 // List lists all webhooks
@@ -73,6 +74,8 @@ func (s *WebhooksService) List(ctx context.Context, opts *WebhooksListOptions) (
 	if err != nil {
 		return nil, resp, err
 	}
+
+	resp.Metadata = root.Metadata
 
 	return root.Webhooks, resp, nil
 }

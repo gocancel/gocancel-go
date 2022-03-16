@@ -65,12 +65,12 @@ func TestProvidersService_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}})
 
-		fmt.Fprint(w, `{"providers": [{"id":"b"}]}`)
+		fmt.Fprint(w, `{"providers": [{"id":"b"}], "metadata": {"next_cursor": "def", "previous_cursor": "abc"}}`)
 	})
 
 	ctx := context.Background()
 	opts := &ProvidersListOptions{Sort: ProvidersSortOptions{CreatedAt: "desc"}}
-	providers, _, err := client.Providers.List(ctx, opts)
+	providers, resp, err := client.Providers.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Providers.List returned error: %v", err)
 	}
@@ -78,6 +78,11 @@ func TestProvidersService_List(t *testing.T) {
 	want := []*Provider{{ID: String("b")}}
 	if !cmp.Equal(providers, want) {
 		t.Errorf("Providers.List returned %+v, want %+v", providers, want)
+	}
+
+	metadata := &Metadata{NextCursor: "def", PreviousCursor: "abc"}
+	if !cmp.Equal(resp.Metadata, metadata) {
+		t.Errorf("Providers.List returned %+v, want %+v", resp.Metadata, metadata)
 	}
 
 	const methodName = "List"

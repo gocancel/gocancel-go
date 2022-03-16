@@ -213,20 +213,26 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 }
 
 // Response is a GoCancel API response. This wraps the standard http.Response
-// returned from GoCancel and provides convenient access to things like
-// pagination links.
+// returned from GoCancel and provides convenient access to things like cursors.
 type Response struct {
 	*http.Response
+
+	// For APIs that support cursor pagination, the metadata field is populated with the
+	// cursor values for paginating through a list of items.
+	Metadata *Metadata
 }
 
 // newResponse creates a new Response for the provided http.Response.
 // r must not be nil.
 func newResponse(r *http.Response) *Response {
 	response := &Response{Response: r}
-	// response.populatePageValues()
-	// response.Rate = parseRate(r)
+	// response.populateMetadataValues()
 	return response
 }
+
+// func (r *Response) populateMetadataValues() {
+// 	Unable to retrieve metadata from JSON response here.
+// }
 
 // BareDo sends an API request and lets you handle the api response. If an error
 // or API Error occurs, the error will contain more information. Otherwise you

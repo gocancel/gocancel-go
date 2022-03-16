@@ -38,6 +38,8 @@ func (s *OrganizationsService) ListProducts(ctx context.Context, organization st
 		return nil, resp, err
 	}
 
+	resp.Metadata = root.Metadata
+
 	return root.Products, resp, nil
 }
 

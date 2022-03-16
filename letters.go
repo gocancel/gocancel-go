@@ -32,7 +32,7 @@ type Letter struct {
 	SignatureData         *string                `json:"signature_data,omitempty"`
 	SandboxMode           *bool                  `json:"sandbox_mode,omitempty"`
 	SandboxEmail          *string                `json:"sandbox_email,omitempty"`
-	Metadata              *Metadata              `json:"metadata,omitempty"`
+	Metadata              *AccountMetadata       `json:"metadata,omitempty"`
 	CreatedAt             *Timestamp             `json:"created_at,omitempty"`
 	UpdatedAt             *Timestamp             `json:"updated_at,omitempty"`
 }
@@ -55,7 +55,7 @@ type LetterRequest struct {
 	SignatureType  string           `json:"signature_type,omitempty"`
 	SignatureData  string           `json:"signature_data,omitempty"`
 	Consent        bool             `json:"consent,omitempty"`
-	Metadata       Metadata         `json:"metadata,omitempty"`
+	Metadata       AccountMetadata  `json:"metadata,omitempty"`
 	Drafted        bool             `json:"drafted,omitempty"`
 }
 
@@ -73,7 +73,8 @@ type letterRoot struct {
 }
 
 type lettersRoot struct {
-	Letters []*Letter `json:"letters"`
+	Letters  []*Letter `json:"letters"`
+	Metadata *Metadata `json:"metadata"`
 }
 
 // List lists all letters.
@@ -93,6 +94,8 @@ func (s *LettersService) List(ctx context.Context, opts *LettersListOptions) ([]
 	if err != nil {
 		return nil, resp, err
 	}
+
+	resp.Metadata = root.Metadata
 
 	return root.Letters, resp, nil
 }
