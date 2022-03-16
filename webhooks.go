@@ -40,10 +40,10 @@ type WebhooksSortOptions struct {
 // WebhooksService.List method.
 type WebhooksListOptions struct {
 	// Active filters webhooks by their status.
-	Active bool `url:"active,omitempty"`
-	// Account filters webhooks by their account.
-	Account string              `url:"account,omitempty"`
+	Active  bool                `url:"active,omitempty"`
+	Cursor  string              `url:"cursor,omitempty"`
 	Events  []string            `url:"events,omitempty"`
+	Limit   int                 `url:"limit,omitempty"`
 	Locales []string            `url:"locales,omitempty"`
 	Sort    WebhooksSortOptions `url:"sort,omitempty"`
 }

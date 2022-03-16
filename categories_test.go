@@ -130,13 +130,13 @@ func TestCategoriesService_List(t *testing.T) {
 
 	mux.HandleFunc("/api/v1/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}})
+		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}, "locales": {"nl-NL"}})
 
 		fmt.Fprint(w, `{"categories": [{"id":"b"}]}`)
 	})
 
 	ctx := context.Background()
-	opts := &CategoriesListOptions{Sort: CategoriesSortOptions{CreatedAt: "desc"}}
+	opts := &CategoriesListOptions{Sort: CategoriesSortOptions{CreatedAt: "desc"}, Locales: []string{"nl-NL"}}
 	categories, _, err := client.Categories.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Categories.List returned error: %v", err)

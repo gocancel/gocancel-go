@@ -190,13 +190,13 @@ func TestOrganizationsService_List(t *testing.T) {
 
 	mux.HandleFunc("/api/v1/organizations", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}})
+		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}, "locales": {"nl-NL"}})
 
 		fmt.Fprint(w, `{"organizations": [{"id":"b"}]}`)
 	})
 
 	ctx := context.Background()
-	opts := &OrganizationsListOptions{Sort: OrganizationsSortOptions{CreatedAt: "desc"}}
+	opts := &OrganizationsListOptions{Sort: OrganizationsSortOptions{CreatedAt: "desc"}, Locales: []string{"nl-NL"}}
 	organizations, _, err := client.Organizations.List(ctx, opts)
 	if err != nil {
 		t.Errorf("Organizations.List returned error: %v", err)

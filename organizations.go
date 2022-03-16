@@ -74,7 +74,14 @@ type OrganizationsSortOptions struct {
 }
 
 type OrganizationsListOptions struct {
-	Sort OrganizationsSortOptions `url:"sort,omitempty"`
+	Category string                   `url:"category,omitempty"`
+	Cursor   string                   `url:"cursor,omitempty"`
+	Limit    int                      `url:"limit,omitempty"`
+	Locales  []string                 `url:"locales,omitempty"`
+	Metadata map[string]string        `url:"metadata,omitempty"`
+	Slug     string                   `url:"slug,omitempty"`
+	Sort     OrganizationsSortOptions `url:"sort,omitempty"`
+	URL      string                   `url:"url,omitempty"`
 }
 
 type organizationRoot struct {

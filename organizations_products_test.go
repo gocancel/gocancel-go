@@ -16,13 +16,13 @@ func TestOrganizationsService_ListProducts(t *testing.T) {
 
 	mux.HandleFunc("/api/v1/organizations/a/products", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, url.Values{"sort[created_at]": {"asc"}})
+		testFormValues(t, r, url.Values{"sort[created_at]": {"asc"}, "locales": {"nl-NL"}})
 
 		fmt.Fprint(w, `{"products": [{"id":"b"}]}`)
 	})
 
 	ctx := context.Background()
-	opts := &OrganizationProductsListOptions{Sort: OrganizationProductsSortOptions{CreatedAt: "asc"}}
+	opts := &OrganizationProductsListOptions{Sort: OrganizationProductsSortOptions{CreatedAt: "asc"}, Locales: []string{"nl-NL"}}
 	products, _, err := client.Organizations.ListProducts(ctx, "a", opts)
 	if err != nil {
 		t.Errorf("Organizations.ListProducts returned error: %v", err)

@@ -40,7 +40,9 @@ type ProvidersSortOptions struct {
 }
 
 type ProvidersListOptions struct {
-	Sort ProvidersSortOptions `url:"sort,omitempty"`
+	Cursor string               `url:"cursor,omitempty"`
+	Limit  int                  `url:"limit,omitempty"`
+	Sort   ProvidersSortOptions `url:"sort,omitempty"`
 }
 
 type providerRoot struct {

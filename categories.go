@@ -63,7 +63,12 @@ type CategoriesSortOptions struct {
 }
 
 type CategoriesListOptions struct {
-	Sort CategoriesSortOptions `url:"sort,omitempty"`
+	Cursor   string                `url:"cursor,omitempty"`
+	Limit    int                   `url:"limit,omitempty"`
+	Locales  []string              `url:"locales,omitempty"`
+	Metadata map[string]string     `url:"metadata,omitempty"`
+	Slug     string                `url:"slug,omitempty"`
+	Sort     CategoriesSortOptions `url:"sort,omitempty"`
 }
 
 type categoryRoot struct {

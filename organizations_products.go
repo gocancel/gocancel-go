@@ -11,7 +11,13 @@ type OrganizationProductsSortOptions struct {
 }
 
 type OrganizationProductsListOptions struct {
-	Sort OrganizationProductsSortOptions `url:"sort,omitempty"`
+	Cursor   string                          `url:"cursor,omitempty"`
+	Limit    int                             `url:"limit,omitempty"`
+	Locales  []string                        `url:"locales,omitempty"`
+	Metadata map[string]string               `url:"metadata,omitempty"`
+	Slug     string                          `url:"slug,omitempty"`
+	Sort     OrganizationProductsSortOptions `url:"sort,omitempty"`
+	URL      string                          `url:"url,omitempty"`
 }
 
 // List lists all products of an organization
