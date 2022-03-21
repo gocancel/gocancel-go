@@ -14,17 +14,19 @@ func TestProduct_marshal(t *testing.T) {
 	testJSONMarshal(t, &Product{}, "{}")
 
 	o := &Product{
-		ID:             String("26468553-08bb-47c4-a28c-d80dec6ef3b2"),
-		OrganizationID: String("f172758f-7718-41f4-95d6-d3fd931e0326"),
-		Name:           String("ACME"),
-		Slug:           String("acme"),
-		Email:          String("contact@acme.com"),
-		URL:            String("https://acme.com"),
-		Phone:          String("517-234-9141"),
-		Fax:            String("745-756-0818"),
-		Metadata:       &AccountMetadata{"foo": "bar"},
-		CreatedAt:      &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-		UpdatedAt:      &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+		ID:                String("26468553-08bb-47c4-a28c-d80dec6ef3b2"),
+		OrganizationID:    String("f172758f-7718-41f4-95d6-d3fd931e0326"),
+		Name:              String("ACME"),
+		Slug:              String("acme"),
+		Email:             String("contact@acme.com"),
+		URL:               String("https://acme.com"),
+		Phone:             String("517-234-9141"),
+		Fax:               String("745-756-0818"),
+		RequiresConsent:   Bool(true),
+		RequiresProofOfID: Bool(true),
+		Metadata:          &AccountMetadata{"foo": "bar"},
+		CreatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+		UpdatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 		Address: &Address{
 			Name:               String("Google"),
@@ -38,17 +40,19 @@ func TestProduct_marshal(t *testing.T) {
 
 		Locales: []*ProductLocale{
 			{
-				ID:        String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"),
-				Name:      String("ACME"),
-				Slug:      String("acme"),
-				Email:     String("contact@acme.com"),
-				URL:       String("https://acme.com"),
-				Phone:     String("517-234-9141"),
-				Fax:       String("745-756-0818"),
-				Locale:    String("nl-NL"),
-				Metadata:  &AccountMetadata{"foo": "bar"},
-				CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-				UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+				ID:                String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"),
+				Name:              String("ACME"),
+				Slug:              String("acme"),
+				Email:             String("contact@acme.com"),
+				URL:               String("https://acme.com"),
+				Phone:             String("517-234-9141"),
+				Fax:               String("745-756-0818"),
+				Locale:            String("nl-NL"),
+				RequiresConsent:   Bool(true),
+				RequiresProofOfID: Bool(true),
+				Metadata:          &AccountMetadata{"foo": "bar"},
+				CreatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+				UpdatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 				Address: &Address{
 					Name:               String("Google"),
@@ -105,6 +109,8 @@ func TestProduct_marshal(t *testing.T) {
 			"url": "https://acme.com",
 			"phone": "517-234-9141",
 			"fax": "745-756-0818",
+			"requires_consent": true,
+			"requires_proof_of_id": true,
 			"address": {
 				"name": "Google",
 				"for_attention_of": "Mr. John Doe",
@@ -126,6 +132,8 @@ func TestProduct_marshal(t *testing.T) {
 					"phone": "517-234-9141",
 					"fax": "745-756-0818",
 					"locale": "nl-NL",
+					"requires_consent": true,
+					"requires_proof_of_id": true,
 					"address": {
 						"name": "Google",
 						"for_attention_of": "Mr. John Doe",

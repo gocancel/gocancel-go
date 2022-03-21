@@ -11,13 +11,14 @@ type CategoriesService service
 
 // Category represents a GoCancel category.
 type Category struct {
-	ID        *string           `json:"id,omitempty"`
-	Name      *string           `json:"name,omitempty"`
-	Slug      *string           `json:"slug,omitempty"`
-	Locales   []*CategoryLocale `json:"locales,omitempty"`
-	Metadata  *AccountMetadata  `json:"metadata,omitempty"`
-	CreatedAt *Timestamp        `json:"created_at,omitempty"`
-	UpdatedAt *Timestamp        `json:"updated_at,omitempty"`
+	ID              *string           `json:"id,omitempty"`
+	Name            *string           `json:"name,omitempty"`
+	Slug            *string           `json:"slug,omitempty"`
+	RequiresConsent *bool             `json:"requires_consent,omitempty"`
+	Locales         []*CategoryLocale `json:"locales,omitempty"`
+	Metadata        *AccountMetadata  `json:"metadata,omitempty"`
+	CreatedAt       *Timestamp        `json:"created_at,omitempty"`
+	UpdatedAt       *Timestamp        `json:"updated_at,omitempty"`
 }
 
 func (c Category) String() string {
@@ -26,15 +27,16 @@ func (c Category) String() string {
 
 // CategoryLocale represents the localized variant of the category.
 type CategoryLocale struct {
-	ID             *string             `json:"id,omitempty"`
-	Name           *string             `json:"name,omitempty"`
-	Slug           *string             `json:"slug,omitempty"`
-	Locale         *string             `json:"locale,omitempty"`
-	Providers      []*CategoryProvider `json:"providers,omitempty"`
-	LetterTemplate *LetterTemplate     `json:"letter_template,omitempty"`
-	Metadata       *AccountMetadata    `json:"metadata,omitempty"`
-	CreatedAt      *Timestamp          `json:"created_at,omitempty"`
-	UpdatedAt      *Timestamp          `json:"updated_at,omitempty"`
+	ID              *string             `json:"id,omitempty"`
+	Name            *string             `json:"name,omitempty"`
+	Slug            *string             `json:"slug,omitempty"`
+	RequiresConsent *bool               `json:"requires_consent,omitempty"`
+	Locale          *string             `json:"locale,omitempty"`
+	Providers       []*CategoryProvider `json:"providers,omitempty"`
+	LetterTemplate  *LetterTemplate     `json:"letter_template,omitempty"`
+	Metadata        *AccountMetadata    `json:"metadata,omitempty"`
+	CreatedAt       *Timestamp          `json:"created_at,omitempty"`
+	UpdatedAt       *Timestamp          `json:"updated_at,omitempty"`
 }
 
 func (o CategoryLocale) String() string {

@@ -15,22 +15,24 @@ func TestCategory_marshal(t *testing.T) {
 	testJSONMarshal(t, &Category{}, "{}")
 
 	o := &Category{
-		ID:        String("f172758f-7718-41f4-95d6-d3fd931e0326"),
-		Name:      String("Finance"),
-		Slug:      String("finance"),
-		Metadata:  &AccountMetadata{"foo": "bar"},
-		CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-		UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+		ID:              String("f172758f-7718-41f4-95d6-d3fd931e0326"),
+		Name:            String("Finance"),
+		Slug:            String("finance"),
+		RequiresConsent: Bool(true),
+		Metadata:        &AccountMetadata{"foo": "bar"},
+		CreatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+		UpdatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 		Locales: []*CategoryLocale{
 			{
-				ID:        String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"),
-				Name:      String("Financieel"),
-				Slug:      String("financieel"),
-				Locale:    String("nl-NL"),
-				Metadata:  &AccountMetadata{"foo": "bar"},
-				CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-				UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+				ID:              String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"),
+				Name:            String("Financieel"),
+				Slug:            String("financieel"),
+				Locale:          String("nl-NL"),
+				RequiresConsent: Bool(true),
+				Metadata:        &AccountMetadata{"foo": "bar"},
+				CreatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+				UpdatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 				Providers: []*CategoryProvider{
 					{
@@ -72,11 +74,13 @@ func TestCategory_marshal(t *testing.T) {
 			"id":"f172758f-7718-41f4-95d6-d3fd931e0326",
 			"name": "Finance",
 			"slug": "finance",
+			"requires_consent": true,
 			"locales": [
 				{
 					"id": "f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05",
 					"name": "Financieel",
 					"slug": "financieel",
+					"requires_consent": true,
 					"locale": "nl-NL",
 					"providers": [
 						{

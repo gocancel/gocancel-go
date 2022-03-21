@@ -11,19 +11,21 @@ type ProductsService service
 
 // Product represents a product of an organization.
 type Product struct {
-	ID             *string          `json:"id,omitempty"`
-	OrganizationID *string          `json:"organization_id,omitempty"`
-	Name           *string          `json:"name,omitempty"`
-	Slug           *string          `json:"slug,omitempty"`
-	Email          *string          `json:"email,omitempty"`
-	URL            *string          `json:"url,omitempty"`
-	Phone          *string          `json:"phone,omitempty"`
-	Fax            *string          `json:"fax,omitempty"`
-	Address        *Address         `json:"address,omitempty"`
-	Locales        []*ProductLocale `json:"locales,omitempty"`
-	Metadata       *AccountMetadata `json:"metadata,omitempty"`
-	CreatedAt      *Timestamp       `json:"created_at,omitempty"`
-	UpdatedAt      *Timestamp       `json:"updated_at,omitempty"`
+	ID                *string          `json:"id,omitempty"`
+	OrganizationID    *string          `json:"organization_id,omitempty"`
+	Name              *string          `json:"name,omitempty"`
+	Slug              *string          `json:"slug,omitempty"`
+	Email             *string          `json:"email,omitempty"`
+	URL               *string          `json:"url,omitempty"`
+	Phone             *string          `json:"phone,omitempty"`
+	Fax               *string          `json:"fax,omitempty"`
+	Address           *Address         `json:"address,omitempty"`
+	RequiresConsent   *bool            `json:"requires_consent,omitempty"`
+	RequiresProofOfID *bool            `json:"requires_proof_of_id,omitempty"`
+	Locales           []*ProductLocale `json:"locales,omitempty"`
+	Metadata          *AccountMetadata `json:"metadata,omitempty"`
+	CreatedAt         *Timestamp       `json:"created_at,omitempty"`
+	UpdatedAt         *Timestamp       `json:"updated_at,omitempty"`
 }
 
 func (p Product) String() string {
@@ -32,20 +34,22 @@ func (p Product) String() string {
 
 // ProductLocale represents the localized variant of the product.
 type ProductLocale struct {
-	ID             *string            `json:"id,omitempty"`
-	Name           *string            `json:"name,omitempty"`
-	Slug           *string            `json:"slug,omitempty"`
-	Locale         *string            `json:"locale,omitempty"`
-	Email          *string            `json:"email,omitempty"`
-	URL            *string            `json:"url,omitempty"`
-	Phone          *string            `json:"phone,omitempty"`
-	Fax            *string            `json:"fax,omitempty"`
-	Address        *Address           `json:"address,omitempty"`
-	Providers      []*ProductProvider `json:"providers,omitempty"`
-	LetterTemplate *LetterTemplate    `json:"letter_template,omitempty"`
-	Metadata       *AccountMetadata   `json:"metadata,omitempty"`
-	CreatedAt      *Timestamp         `json:"created_at,omitempty"`
-	UpdatedAt      *Timestamp         `json:"updated_at,omitempty"`
+	ID                *string            `json:"id,omitempty"`
+	Name              *string            `json:"name,omitempty"`
+	Slug              *string            `json:"slug,omitempty"`
+	Locale            *string            `json:"locale,omitempty"`
+	Email             *string            `json:"email,omitempty"`
+	URL               *string            `json:"url,omitempty"`
+	Phone             *string            `json:"phone,omitempty"`
+	Fax               *string            `json:"fax,omitempty"`
+	Address           *Address           `json:"address,omitempty"`
+	RequiresConsent   *bool              `json:"requires_consent,omitempty"`
+	RequiresProofOfID *bool              `json:"requires_proof_of_id,omitempty"`
+	Providers         []*ProductProvider `json:"providers,omitempty"`
+	LetterTemplate    *LetterTemplate    `json:"letter_template,omitempty"`
+	Metadata          *AccountMetadata   `json:"metadata,omitempty"`
+	CreatedAt         *Timestamp         `json:"created_at,omitempty"`
+	UpdatedAt         *Timestamp         `json:"updated_at,omitempty"`
 }
 
 func (o ProductLocale) String() string {

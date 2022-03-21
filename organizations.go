@@ -11,19 +11,21 @@ type OrganizationsService service
 
 // Organization represents a GoCancel organization.
 type Organization struct {
-	ID         *string               `json:"id,omitempty"`
-	CategoryID *string               `json:"category_id,omitempty"`
-	Name       *string               `json:"name,omitempty"`
-	Slug       *string               `json:"slug,omitempty"`
-	Email      *string               `json:"email,omitempty"`
-	URL        *string               `json:"url,omitempty"`
-	Phone      *string               `json:"phone,omitempty"`
-	Fax        *string               `json:"fax,omitempty"`
-	Address    *Address              `json:"address,omitempty"`
-	Locales    []*OrganizationLocale `json:"locales,omitempty"`
-	Metadata   *AccountMetadata      `json:"metadata,omitempty"`
-	CreatedAt  *Timestamp            `json:"created_at,omitempty"`
-	UpdatedAt  *Timestamp            `json:"updated_at,omitempty"`
+	ID                *string               `json:"id,omitempty"`
+	CategoryID        *string               `json:"category_id,omitempty"`
+	Name              *string               `json:"name,omitempty"`
+	Slug              *string               `json:"slug,omitempty"`
+	Email             *string               `json:"email,omitempty"`
+	URL               *string               `json:"url,omitempty"`
+	Phone             *string               `json:"phone,omitempty"`
+	Fax               *string               `json:"fax,omitempty"`
+	Address           *Address              `json:"address,omitempty"`
+	RequiresConsent   *bool                 `json:"requires_consent,omitempty"`
+	RequiresProofOfID *bool                 `json:"requires_proof_of_id,omitempty"`
+	Locales           []*OrganizationLocale `json:"locales,omitempty"`
+	Metadata          *AccountMetadata      `json:"metadata,omitempty"`
+	CreatedAt         *Timestamp            `json:"created_at,omitempty"`
+	UpdatedAt         *Timestamp            `json:"updated_at,omitempty"`
 }
 
 func (o Organization) String() string {
@@ -32,20 +34,22 @@ func (o Organization) String() string {
 
 // OrganizationLocale represents the localized variant of the organization.
 type OrganizationLocale struct {
-	ID             *string                 `json:"id,omitempty"`
-	Name           *string                 `json:"name,omitempty"`
-	Slug           *string                 `json:"slug,omitempty"`
-	Locale         *string                 `json:"locale,omitempty"`
-	Email          *string                 `json:"email,omitempty"`
-	URL            *string                 `json:"url,omitempty"`
-	Phone          *string                 `json:"phone,omitempty"`
-	Fax            *string                 `json:"fax,omitempty"`
-	Address        *Address                `json:"address,omitempty"`
-	Providers      []*OrganizationProvider `json:"providers,omitempty"`
-	LetterTemplate *LetterTemplate         `json:"letter_template,omitempty"`
-	Metadata       *AccountMetadata        `json:"metadata,omitempty"`
-	CreatedAt      *Timestamp              `json:"created_at,omitempty"`
-	UpdatedAt      *Timestamp              `json:"updated_at,omitempty"`
+	ID                *string                 `json:"id,omitempty"`
+	Name              *string                 `json:"name,omitempty"`
+	Slug              *string                 `json:"slug,omitempty"`
+	Locale            *string                 `json:"locale,omitempty"`
+	Email             *string                 `json:"email,omitempty"`
+	URL               *string                 `json:"url,omitempty"`
+	Phone             *string                 `json:"phone,omitempty"`
+	Fax               *string                 `json:"fax,omitempty"`
+	Address           *Address                `json:"address,omitempty"`
+	RequiresConsent   *bool                   `json:"requires_consent,omitempty"`
+	RequiresProofOfID *bool                   `json:"requires_proof_of_id,omitempty"`
+	Providers         []*OrganizationProvider `json:"providers,omitempty"`
+	LetterTemplate    *LetterTemplate         `json:"letter_template,omitempty"`
+	Metadata          *AccountMetadata        `json:"metadata,omitempty"`
+	CreatedAt         *Timestamp              `json:"created_at,omitempty"`
+	UpdatedAt         *Timestamp              `json:"updated_at,omitempty"`
 }
 
 func (o OrganizationLocale) String() string {
