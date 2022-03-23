@@ -58,14 +58,13 @@ func (o ProductLocale) String() string {
 
 // ProductProvider represents the provider of the product.
 type ProductProvider struct {
-	ID                    *string                `json:"id,omitempty"`
-	ProviderID            *string                `json:"provider_id,omitempty"`
-	ProviderType          *string                `json:"provider_type,omitempty"`
-	ProviderMethod        *string                `json:"provider_method,omitempty"`
-	ProviderConfiguration *ProviderConfiguration `json:"provider_configuration,omitempty"`
-	Metadata              *AccountMetadata       `json:"metadata,omitempty"`
-	CreatedAt             *Timestamp             `json:"created_at,omitempty"`
-	UpdatedAt             *Timestamp             `json:"updated_at,omitempty"`
+	ID        *string          `json:"id,omitempty"`
+	Name      *string          `json:"name,omitempty"`
+	Type      *string          `json:"type,omitempty"`
+	Method    *string          `json:"method,omitempty"`
+	Metadata  *AccountMetadata `json:"metadata,omitempty"`
+	CreatedAt *Timestamp       `json:"created_at,omitempty"`
+	UpdatedAt *Timestamp       `json:"updated_at,omitempty"`
 }
 
 func (o ProductProvider) String() string {

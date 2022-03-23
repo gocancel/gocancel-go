@@ -66,14 +66,13 @@ func TestProduct_marshal(t *testing.T) {
 
 				Providers: []*ProductProvider{
 					{
-						ID:                    String("f8acd284-bb6a-4933-a244-dedb9797b1d5"),
-						ProviderID:            String("e88524b8-1380-41fe-b8b4-a08daabf03c8"),
-						ProviderType:          String("email"),
-						ProviderMethod:        String("single"),
-						ProviderConfiguration: &ProviderConfiguration{"foo": "bar"},
-						Metadata:              &AccountMetadata{"foo": "bar"},
-						CreatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-						UpdatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+						ID:        String("f8acd284-bb6a-4933-a244-dedb9797b1d5"),
+						Name:      String("Email"),
+						Type:      String("email"),
+						Method:    String("single"),
+						Metadata:  &AccountMetadata{"foo": "bar"},
+						CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+						UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 					},
 				},
 
@@ -148,12 +147,9 @@ func TestProduct_marshal(t *testing.T) {
 					"providers": [
 						{
 							"id": "f8acd284-bb6a-4933-a244-dedb9797b1d5",
-							"provider_id": "e88524b8-1380-41fe-b8b4-a08daabf03c8",
-							"provider_type": "email",
-							"provider_method": "single",
-							"provider_configuration": {
-                                "foo": "bar"
-                            },
+							"name": "Email",
+							"type": "email",
+							"method": "single",
 							"metadata": {
 								"foo": "bar"
 							},
