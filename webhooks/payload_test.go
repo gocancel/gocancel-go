@@ -12,7 +12,7 @@ var (
 		"id": "evt_test_webhook",
 		"object": "event"
   	}`)
-	testSecret = "wh_sig_test_secret"
+	testSecret = "wh_sig_test_secret" //nolint:gosec
 )
 
 type signedPayload struct {
