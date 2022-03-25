@@ -1,4 +1,2 @@
 /.cover.out
-/.envrc*
-!.envrc.example
 /coverage.html
