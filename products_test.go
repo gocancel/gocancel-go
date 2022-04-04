@@ -51,8 +51,6 @@ func TestProduct_marshal(t *testing.T) {
 				RequiresConsent:   Bool(true),
 				RequiresProofOfID: Bool(true),
 				Metadata:          &AccountMetadata{"foo": "bar"},
-				CreatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-				UpdatedAt:         &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 				Address: &Address{
 					Name:               String("Google"),
@@ -66,13 +64,10 @@ func TestProduct_marshal(t *testing.T) {
 
 				Providers: []*ProductProvider{
 					{
-						ID:        String("f8acd284-bb6a-4933-a244-dedb9797b1d5"),
-						Name:      String("Email"),
-						Type:      String("email"),
-						Method:    String("single"),
-						Metadata:  &AccountMetadata{"foo": "bar"},
-						CreatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-						UpdatedAt: &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+						ID:     String("f8acd284-bb6a-4933-a244-dedb9797b1d5"),
+						Name:   String("Email"),
+						Type:   String("email"),
+						Method: String("single"),
 					},
 				},
 
@@ -149,12 +144,7 @@ func TestProduct_marshal(t *testing.T) {
 							"id": "f8acd284-bb6a-4933-a244-dedb9797b1d5",
 							"name": "Email",
 							"type": "email",
-							"method": "single",
-							"metadata": {
-								"foo": "bar"
-							},
-							"created_at":"2021-05-27T11:49:05Z",
-							"updated_at":"2021-05-27T11:49:05Z"
+							"method": "single"
 						}
 					],
 					"letter_template": {
@@ -172,9 +162,7 @@ func TestProduct_marshal(t *testing.T) {
 					},
 					"metadata": {
 						"foo": "bar"
-					},
-					"created_at":"2021-05-27T11:49:05Z",
-					"updated_at":"2021-05-27T11:49:05Z"
+					}
 				}
 			],
 			"metadata": {

@@ -31,19 +31,13 @@ func TestCategory_marshal(t *testing.T) {
 				Locale:          String("nl-NL"),
 				RequiresConsent: Bool(true),
 				Metadata:        &AccountMetadata{"foo": "bar"},
-				CreatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-				UpdatedAt:       &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
 
 				Providers: []*CategoryProvider{
 					{
-						ID:                    String("c61320df-9d9c-4738-b4c1-12db3f41af6c"),
-						ProviderID:            String("e88524b8-1380-41fe-b8b4-a08daabf03c8"),
-						ProviderType:          String("email"),
-						ProviderMethod:        String("single"),
-						ProviderConfiguration: &ProviderConfiguration{"foo": "bar"},
-						Metadata:              &AccountMetadata{"foo": "bar"},
-						CreatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
-						UpdatedAt:             &Timestamp{time.Date(2021, time.May, 27, 11, 49, 05, 0, time.UTC)},
+						ID:     String("c61320df-9d9c-4738-b4c1-12db3f41af6c"),
+						Name:   String("Email"),
+						Type:   String("email"),
+						Method: String("single"),
 					},
 				},
 
@@ -85,17 +79,9 @@ func TestCategory_marshal(t *testing.T) {
 					"providers": [
 						{
 							"id": "c61320df-9d9c-4738-b4c1-12db3f41af6c",
-							"provider_id": "e88524b8-1380-41fe-b8b4-a08daabf03c8",
-							"provider_type": "email",
-							"provider_method": "single",
-							"provider_configuration": {
-								"foo": "bar"
-							},
-							"metadata": {
-								"foo": "bar"
-							},
-							"created_at":"2021-05-27T11:49:05Z",
-							"updated_at":"2021-05-27T11:49:05Z"
+							"name": "Email",
+							"type": "email",
+							"method": "single"
 						}
 					],
 					"letter_template": {
@@ -113,9 +99,7 @@ func TestCategory_marshal(t *testing.T) {
 					},
 					"metadata": {
 						"foo": "bar"
-					},
-					"created_at":"2021-05-27T11:49:05Z",
-					"updated_at":"2021-05-27T11:49:05Z"
+					}
 				}
 			],
 			"metadata": {
