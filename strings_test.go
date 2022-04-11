@@ -52,8 +52,8 @@ func TestStringify(t *testing.T) {
 			`gocancel.Category{ID:"26468553-08bb-47c4-a28c-d80dec6ef3b2", Name:"foo"}`,
 		},
 		{
-			Organization{Locales: []*OrganizationLocale{{ID: String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05")}}},
-			`gocancel.Organization{Locales:[gocancel.OrganizationLocale{ID:"f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"}]}`,
+			OrganizationLocale{Providers: []*OrganizationProvider{{ID: String("f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05")}}},
+			`gocancel.OrganizationLocale{Providers:[gocancel.OrganizationProvider{ID:"f38c8fab-0fa6-40b6-bb0c-6b3dfa2fec05"}]}`,
 		},
 	}
 

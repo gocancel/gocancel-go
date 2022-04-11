@@ -2,8 +2,11 @@ package gocancel
 
 // LetterTemplate represents an embeddable letter template.
 type LetterTemplate struct {
-	Template *string                `json:"template,omitempty"`
-	Fields   []*LetterTemplateField `json:"fields,omitempty"`
+	ID        *string                `json:"id,omitempty"`
+	Template  *string                `json:"template,omitempty"`
+	Fields    []*LetterTemplateField `json:"fields,omitempty"`
+	CreatedAt *Timestamp             `json:"created_at,omitempty"`
+	UpdatedAt *Timestamp             `json:"updated_at,omitempty"`
 }
 
 func (l LetterTemplate) String() string {
@@ -23,4 +26,8 @@ type LetterTemplateField struct {
 type LetterTemplateFieldOption struct {
 	Value *string `json:"value,omitempty"`
 	Label *string `json:"label,omitempty"`
+}
+
+type letterTemplateRoot struct {
+	LetterTemplate *LetterTemplate `json:"letter_template"`
 }

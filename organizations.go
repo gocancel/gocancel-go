@@ -11,21 +11,21 @@ type OrganizationsService service
 
 // Organization represents a GoCancel organization.
 type Organization struct {
-	ID                *string               `json:"id,omitempty"`
-	CategoryID        *string               `json:"category_id,omitempty"`
-	Name              *string               `json:"name,omitempty"`
-	Slug              *string               `json:"slug,omitempty"`
-	Email             *string               `json:"email,omitempty"`
-	URL               *string               `json:"url,omitempty"`
-	Phone             *string               `json:"phone,omitempty"`
-	Fax               *string               `json:"fax,omitempty"`
-	Address           *Address              `json:"address,omitempty"`
-	RequiresConsent   *bool                 `json:"requires_consent,omitempty"`
-	RequiresProofOfID *bool                 `json:"requires_proof_of_id,omitempty"`
-	Locales           []*OrganizationLocale `json:"locales,omitempty"`
-	Metadata          *AccountMetadata      `json:"metadata,omitempty"`
-	CreatedAt         *Timestamp            `json:"created_at,omitempty"`
-	UpdatedAt         *Timestamp            `json:"updated_at,omitempty"`
+	ID                *string          `json:"id,omitempty"`
+	CategoryID        *string          `json:"category_id,omitempty"`
+	Name              *string          `json:"name,omitempty"`
+	Slug              *string          `json:"slug,omitempty"`
+	Email             *string          `json:"email,omitempty"`
+	URL               *string          `json:"url,omitempty"`
+	Phone             *string          `json:"phone,omitempty"`
+	Fax               *string          `json:"fax,omitempty"`
+	Address           *Address         `json:"address,omitempty"`
+	RequiresConsent   *bool            `json:"requires_consent,omitempty"`
+	RequiresProofOfID *bool            `json:"requires_proof_of_id,omitempty"`
+	Locales           []*string        `json:"locales,omitempty"`
+	Metadata          *AccountMetadata `json:"metadata,omitempty"`
+	CreatedAt         *Timestamp       `json:"created_at,omitempty"`
+	UpdatedAt         *Timestamp       `json:"updated_at,omitempty"`
 }
 
 func (o Organization) String() string {
@@ -91,6 +91,10 @@ type organizationRoot struct {
 	Organization *Organization `json:"organization"`
 }
 
+type organizationLocaleRoot struct {
+	OrganizationLocale *OrganizationLocale `json:"organization_locale"`
+}
+
 type organizationsRoot struct {
 	Organizations []*Organization `json:"organizations"`
 	Metadata      *Metadata       `json:"metadata"`
@@ -98,7 +102,7 @@ type organizationsRoot struct {
 
 // List lists all organizations
 func (s *OrganizationsService) List(ctx context.Context, opts *OrganizationsListOptions) ([]*Organization, *Response, error) {
-	u, err := addOptions("api/v1/organizations", opts)
+	u, err := addOptions("api/v2/organizations", opts)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -119,9 +123,9 @@ func (s *OrganizationsService) List(ctx context.Context, opts *OrganizationsList
 	return root.Organizations, resp, nil
 }
 
-// Get fetches a organization.
+// Get fetches an organization.
 func (s *OrganizationsService) Get(ctx context.Context, organization string) (*Organization, *Response, error) {
-	u := fmt.Sprintf("api/v1/organizations/%s", organization)
+	u := fmt.Sprintf("api/v2/organizations/%s", organization)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -134,4 +138,38 @@ func (s *OrganizationsService) Get(ctx context.Context, organization string) (*O
 	}
 
 	return root.Organization, resp, nil
+}
+
+// GetLocale fetches a localized organization.
+func (s *OrganizationsService) GetLocale(ctx context.Context, organization string, locale string) (*OrganizationLocale, *Response, error) {
+	u := fmt.Sprintf("api/v2/organizations/%s/locales/%s", organization, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(organizationLocaleRoot)
+	resp, err := s.client.Do(ctx, req, &root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.OrganizationLocale, resp, nil
+}
+
+// GetLetterTemplate fetches a localized letter template for an organization.
+func (s *OrganizationsService) GetLetterTemplate(ctx context.Context, organization string, locale string) (*LetterTemplate, *Response, error) {
+	u := fmt.Sprintf("api/v2/organizations/%s/locales/%s/letter_template", organization, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(letterTemplateRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.LetterTemplate, resp, nil
 }

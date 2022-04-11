@@ -11,14 +11,14 @@ type CategoriesService service
 
 // Category represents a GoCancel category.
 type Category struct {
-	ID              *string           `json:"id,omitempty"`
-	Name            *string           `json:"name,omitempty"`
-	Slug            *string           `json:"slug,omitempty"`
-	RequiresConsent *bool             `json:"requires_consent,omitempty"`
-	Locales         []*CategoryLocale `json:"locales,omitempty"`
-	Metadata        *AccountMetadata  `json:"metadata,omitempty"`
-	CreatedAt       *Timestamp        `json:"created_at,omitempty"`
-	UpdatedAt       *Timestamp        `json:"updated_at,omitempty"`
+	ID              *string          `json:"id,omitempty"`
+	Name            *string          `json:"name,omitempty"`
+	Slug            *string          `json:"slug,omitempty"`
+	RequiresConsent *bool            `json:"requires_consent,omitempty"`
+	Locales         []*string        `json:"locales,omitempty"`
+	Metadata        *AccountMetadata `json:"metadata,omitempty"`
+	CreatedAt       *Timestamp       `json:"created_at,omitempty"`
+	UpdatedAt       *Timestamp       `json:"updated_at,omitempty"`
 }
 
 func (c Category) String() string {
@@ -35,6 +35,8 @@ type CategoryLocale struct {
 	Providers       []*CategoryProvider `json:"providers,omitempty"`
 	LetterTemplate  *LetterTemplate     `json:"letter_template,omitempty"`
 	Metadata        *AccountMetadata    `json:"metadata,omitempty"`
+	CreatedAt       *Timestamp          `json:"created_at,omitempty"`
+	UpdatedAt       *Timestamp          `json:"updated_at,omitempty"`
 }
 
 func (o CategoryLocale) String() string {
@@ -71,6 +73,10 @@ type categoryRoot struct {
 	Category *Category `json:"category"`
 }
 
+type categoryLocaleRoot struct {
+	CategoryLocale *CategoryLocale `json:"category_locale"`
+}
+
 type categoriesRoot struct {
 	Categories []*Category `json:"categories"`
 	Metadata   *Metadata   `json:"metadata"`
@@ -78,7 +84,7 @@ type categoriesRoot struct {
 
 // List lists all categories
 func (s *CategoriesService) List(ctx context.Context, opts *CategoriesListOptions) ([]*Category, *Response, error) {
-	u, err := addOptions("api/v1/categories", opts)
+	u, err := addOptions("api/v2/categories", opts)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -101,7 +107,7 @@ func (s *CategoriesService) List(ctx context.Context, opts *CategoriesListOption
 
 // Get fetches a category.
 func (s *CategoriesService) Get(ctx context.Context, category string) (*Category, *Response, error) {
-	u := fmt.Sprintf("api/v1/categories/%s", category)
+	u := fmt.Sprintf("api/v2/categories/%s", category)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -114,4 +120,38 @@ func (s *CategoriesService) Get(ctx context.Context, category string) (*Category
 	}
 
 	return root.Category, resp, nil
+}
+
+// GetLocale fetches a localized category.
+func (s *CategoriesService) GetLocale(ctx context.Context, category string, locale string) (*CategoryLocale, *Response, error) {
+	u := fmt.Sprintf("api/v2/categories/%s/locales/%s", category, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(categoryLocaleRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.CategoryLocale, resp, nil
+}
+
+// GetLetterTemplate fetches a localized letter template for a category.
+func (s *CategoriesService) GetLetterTemplate(ctx context.Context, category string, locale string) (*LetterTemplate, *Response, error) {
+	u := fmt.Sprintf("api/v2/categories/%s/locales/%s/letter_template", category, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(letterTemplateRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.LetterTemplate, resp, nil
 }

@@ -22,7 +22,7 @@ type Product struct {
 	Address           *Address         `json:"address,omitempty"`
 	RequiresConsent   *bool            `json:"requires_consent,omitempty"`
 	RequiresProofOfID *bool            `json:"requires_proof_of_id,omitempty"`
-	Locales           []*ProductLocale `json:"locales,omitempty"`
+	Locales           []*string        `json:"locales,omitempty"`
 	Metadata          *AccountMetadata `json:"metadata,omitempty"`
 	CreatedAt         *Timestamp       `json:"created_at,omitempty"`
 	UpdatedAt         *Timestamp       `json:"updated_at,omitempty"`
@@ -75,6 +75,10 @@ type productRoot struct {
 	Product *Product `json:"product"`
 }
 
+type productLocaleRoot struct {
+	ProductLocale *ProductLocale `json:"product_locale"`
+}
+
 type productsRoot struct {
 	Products []*Product `json:"products"`
 	Metadata *Metadata  `json:"metadata"`
@@ -82,7 +86,7 @@ type productsRoot struct {
 
 // Get fetches a product.
 func (s *ProductsService) Get(ctx context.Context, product string) (*Product, *Response, error) {
-	u := fmt.Sprintf("api/v1/products/%s", product)
+	u := fmt.Sprintf("api/v2/products/%s", product)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -95,4 +99,38 @@ func (s *ProductsService) Get(ctx context.Context, product string) (*Product, *R
 	}
 
 	return root.Product, resp, nil
+}
+
+// GetLocale fetches a localized product.
+func (s *ProductsService) GetLocale(ctx context.Context, product string, locale string) (*ProductLocale, *Response, error) {
+	u := fmt.Sprintf("api/v2/products/%s/locales/%s", product, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(productLocaleRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.ProductLocale, resp, nil
+}
+
+// GetLetterTemplate fetches a localized letter template for a product.
+func (s *ProductsService) GetLetterTemplate(ctx context.Context, product string, locale string) (*LetterTemplate, *Response, error) {
+	u := fmt.Sprintf("api/v2/products/%s/locales/%s/letter_template", product, locale)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(letterTemplateRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root.LetterTemplate, resp, nil
 }
