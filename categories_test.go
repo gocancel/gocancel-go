@@ -118,7 +118,7 @@ func TestCategoriesService_List(t *testing.T) {
 
 	mux.HandleFunc("/api/v1/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}, "locales": {"nl-NL"}})
+		testFormValues(t, r, url.Values{"sort[created_at]": {"desc"}, "locales[]": {"nl-NL"}})
 
 		fmt.Fprint(w, `{"categories": [{"id":"b"}], "metadata": {"next_cursor": "def", "previous_cursor": "abc"}}`)
 	})

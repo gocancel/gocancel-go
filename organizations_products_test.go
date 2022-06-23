@@ -16,7 +16,7 @@ func TestOrganizationsService_ListProducts(t *testing.T) {
 
 	mux.HandleFunc("/api/v1/organizations/a/products", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, url.Values{"sort[created_at]": {"asc"}, "locales": {"nl-NL"}})
+		testFormValues(t, r, url.Values{"sort[created_at]": {"asc"}, "locales[]": {"nl-NL"}})
 
 		fmt.Fprint(w, `{"products": [{"id":"b"}]}`)
 	})

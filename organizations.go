@@ -80,7 +80,7 @@ type OrganizationsListOptions struct {
 	Category string                   `url:"category,omitempty"`
 	Cursor   string                   `url:"cursor,omitempty"`
 	Limit    int                      `url:"limit,omitempty"`
-	Locales  []string                 `url:"locales,omitempty"`
+	Locales  []string                 `url:"locales[],omitempty"`
 	Metadata map[string]string        `url:"metadata,omitempty"`
 	Slug     string                   `url:"slug,omitempty"`
 	Sort     OrganizationsSortOptions `url:"sort,omitempty"`

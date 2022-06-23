@@ -44,7 +44,7 @@ type WebhooksListOptions struct {
 	Cursor  string              `url:"cursor,omitempty"`
 	Events  []string            `url:"events,omitempty"`
 	Limit   int                 `url:"limit,omitempty"`
-	Locales []string            `url:"locales,omitempty"`
+	Locales []string            `url:"locales[],omitempty"`
 	Sort    WebhooksSortOptions `url:"sort,omitempty"`
 }
 
